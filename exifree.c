@@ -100,8 +100,10 @@ static status_e _scthandler(struct exif *exif, char *path, bool isdt)
 static void _free_node(struct sct *section) {
     struct sct *s = section;
     if (s) {
-        if (s->dt_chunk.freedesc)
-            FREE(s->dt_chunk.desc);
+        if (s->dt_chunk.freedesc) {
+            char *desc = (char*)s->dt_chunk.desc;
+            FREE(desc);
+        }
         mem_free(s->dt_chunk.chunk, s->sct_chunk.chunk, s);
     }
 }

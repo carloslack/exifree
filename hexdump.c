@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void hexdump(unsigned char * data, size_t len, char *name)
+void hexdump(unsigned char * data, size_t len, const char *name)
 {
     unsigned int i;
     size_t r,c;
