@@ -9,7 +9,7 @@
 #define IFDNUM 2
 enum { GPSIFD = 0, ExifIFD };
 static int privIFD[IFDNUM];
-void hexdump(unsigned char *, size_t, char *);
+void hexdump(unsigned char *, size_t, const char *);
 
 // Track repeated tags
 typedef struct {
@@ -46,7 +46,7 @@ static const tags_t *_get_data_tag(uint16_t tag)
 
 static const format_t *_get_data_format(uint16_t format)
 {
-    for (int i = 0; data_format[i].format != -1; ++i) {
+    for (int i = 0; data_format[i].format != 0; ++i) {
         if (data_format[i].format == format)
             return &data_format[i];
     }
@@ -85,7 +85,7 @@ static void _store_data(struct exif *e, unsigned char *buf, int rpt)
     struct sct *node = head;
     node = CALLOC(1, sizeof(struct sct));
 
-    char *d = e->tags->desc;
+    const char *d = e->tags->desc;
     if (rpt) {
         char num[16] = {0};
         snprintf(num, 15, "-%d", rpt);
@@ -245,7 +245,7 @@ struct exif *get_chunk(uint32_t pos, size_t len)
 {
     static struct exif e;
     long file_size = exif_getfilesize();
-    if (pos < 0 || pos > file_size || pos+len > file_size) {
+    if (pos > file_size || pos+len > file_size) {
         fprintf(stderr, "Invalid file position %u\n", pos);
         // no reason to proceed
         abort();

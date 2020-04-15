@@ -3,8 +3,12 @@
 
 #include <stdbool.h>
 #include <stdarg.h>
+#include <string.h>
 #include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <arpa/inet.h>
+#include <linux/limits.h>
 #define FREE(x) if(x!=NULL) {\
     free(x);\
     x=NULL;\
@@ -216,12 +220,12 @@ typedef struct {
 
 static const format_t data_format[] = {
     {1, 1},{2, 1},{3, 2},{4, 4},{5, 8},{6, 1},{7, 1},
-    {8, 2},{9, 4},{10, 8},{11, 4},{12, 8},{-1, -1}
+    {8, 2},{9, 4},{10, 8},{11, 4},{12, 8},{0, -1}
 };
 
 // Exif tags
 typedef struct {
-    char *desc;
+    const char *desc;
     uint16_t tag;
 } tags_t;
 
@@ -369,7 +373,7 @@ struct exif{
     size_t wpos; //
 
     // used to structure the bins in filesystem
-    char *desc; //
+    const char *desc; //
     unsigned char *chunk;
     const tags_t *tags;
     const format_t *fmt;
