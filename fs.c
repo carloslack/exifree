@@ -103,7 +103,7 @@ status_e fs_get_file_size(FILE *file, long *count)
     *count = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    if (!count)
+    if (!*count)
        return S_EMPTY;
 
     return S_OK;
