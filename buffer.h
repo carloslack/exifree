@@ -56,7 +56,7 @@ enum {
 };
 struct sectiontype_t {
     int type;
-    char *sct_type_desc;
+    const char *sct_type_desc;
 };
 static struct sectiontype_t sct_type_handler[] = {
     {SECTION_SUBIFD, "subifd"},
@@ -66,7 +66,7 @@ static struct sectiontype_t sct_type_handler[] = {
     {SECTION_PRIV, "priv"},
     {-1}
 };
-static inline char *get_sct_type(int s) {
+static inline const char *get_sct_type(int s) {
     for (int i = 0; sct_type_handler[i].type != -1; ++i) {
         if (s == sct_type_handler[i].type)
             return sct_type_handler[i].sct_type_desc;
@@ -86,7 +86,7 @@ typedef enum {
 
 struct status_t{
     int status;
-    char *status_desc;
+    const char *status_desc;
 };
 
 static struct status_t status_handler[] = {
