@@ -329,7 +329,7 @@ status_e exif_ifddata(bool verbose, bool bin)
             struct exif e;
             e.tags = _get_data_tag(epriv[i].tag);
             e.group = epriv[i].group ? epriv[i].group : SECTION_IFD0;
-            e.wpos = epriv[i].off;;
+            e.wpos = epriv[i].off;
             e.wlen = epriv[i].len;
             int rpt = _warn_if_tag_repeats(e.tags, e.wlen);
             _wipe_chunk(&e, verbose, bin, rpt);
