@@ -1,6 +1,10 @@
 # ExiFREE
     Small EXIF data eraser.
 
+<p align="left">
+    <a href="https://github.com/carloslack/exifree/blob/master/LICENSE"><img alt="Software License" src="https://img.shields.io/badge/MIT-license-green.svg?style=flat-square"></a>
+</p>
+
 ## About
         Exchangeable Image File Format - EXIF, is a standard that specifies the formats for images,
     sound and ancillary tags used by digital cameras and smartphones.
