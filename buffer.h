@@ -139,7 +139,7 @@ static inline void _mem_free(int argc, ...) {
 static inline char *_strconcat(int argc, ...)
 {
     va_list ap;
-    char *result = CALLOC(1, PATH_MAX+1);
+    char *result = (char*)CALLOC(1, PATH_MAX+1);
 
     va_start(ap, argc);
     int pos = 0, max = PATH_MAX;
@@ -215,7 +215,7 @@ uint32_t data32(unsigned char *chunk);
  */
 typedef struct {
     uint16_t format;
-    int bytes; /* number of bytes per unit */
+    size_t bytes; /* number of bytes per unit */
 } format_t;
 
 static const format_t data_format[] = {
