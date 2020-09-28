@@ -13,9 +13,9 @@ void hexdump(unsigned char *, size_t, const char *);
 
 // Track repeated tags
 typedef struct {
-    int num;
+    int ntimes;
 } tag_tick_t;
-static tag_tick_t tag_tick[IFD0LIST_MAX];
+static tag_tick_t repeat_list[IFD0LIST_MAX];
 
 typedef struct
 {
@@ -130,15 +130,15 @@ void _wipe_chunk(struct exif *e, bool verbose, bool bin, int rpt)
 
 static int _warn_if_tag_repeats(const tags_t *tag, size_t len)
 {
-    int ret = 0;
-    if (!tag_tick[tag->tag].num)
-        tag_tick[tag->tag].num = 1;
+    int rv = 0;
+    if (!repeat_list[tag->tag].ntimes)
+        repeat_list[tag->tag].ntimes = 1;
     else {
         printf("*** Tag %04x/%s: repeats\n", tag->tag, tag->desc);
-        ret = tag_tick[tag->tag].num++;
+        rv = repeat_list[tag->tag].ntimes++;
 
     }
-    return ret;
+    return rv;
 }
 
 static inline uint16_t _data16(unsigned char *chunk)
