@@ -28,6 +28,7 @@ SOFTWARE.
 #include <errno.h>
 #include <linux/limits.h>
 #include <libgen.h>
+#include <assert.h>
 
 #include "buffer.h"
 #include "fs.h"
@@ -103,71 +104,43 @@ static void _free_node(struct sct *section) {
     }
 }
 
-int main(int argc, char **argv)
+int process_and_run(char *input_file, char *dir_name, int flags)
 {
-    int count = 0, flags = 0;
+    int count = 0;
     long osize = 0;
-    char *pathname = NULL, *ifile = NULL,
-         *ofile = NULL, *spath = NULL, *path = ".";
+    char *ifile = NULL,
+         *ofile = NULL, *spath = NULL;
     status_e status;
-    for (int i = 1; i < argc; ++i) {
-        char *arg = argv[i];
-        for (++arg; *arg; ++arg) {
-            switch(*arg) {
-                case 'v':
-                    flags |= SET_VERBOSE;
-                    break;
-                case 'r':
-                    flags |= SET_DRYRUN;
-                    break;
-                case 's':
-                    flags |= SET_BINDUMP;
-                    break;
-                case 'd':
-                    path = argv[++i];
-                    break;
-                default:
-                    pathname = argv[i];
-                    break;
-            }
-            if (pathname)
-                break;
-        }
-    }
-
-    if (!pathname)
-        hlp(0);
-
-    ifile = strrchr(pathname, '/');
+    ifile = strrchr(input_file, '/');
     if (!ifile)
-        ifile = pathname;
+        ifile = input_file;
 
-    FILE *fp = fopen(pathname, "r+b");
+    FILE *fp = fopen(input_file, "r+b");
     if (!fp) {
         fprintf(stderr, "fopen: %s\n", strerror(errno));
-        exit(1);
+        return 1;
     }
 
     long isize;
     if ((status = fs_get_file_size(fp, &isize)) != S_OK) {
         fprintf(stderr, "%s\n", get_status(status));
-        exit(1);
+        return 1;
     }
 
     if (!(isize = exif_setfilesize(isize))) {
         fprintf(stderr, "Error: invalid file size %ld\n", isize);
-        exit(1);
+        return 1;
     }
 
     unsigned char *buf = exif_setbufferptr(isize);
     if (!buf) {
         printf("Error: cannot set file buffer\n");
-        exit(1);
+        return 1;
     }
 
     if (fread(buf, isize, 1, fp) != 1) {
         printf("%s\n", strerror(errno));
-        exit(1);
+        return 1;
     }
 
     bool dry = flags & SET_DRYRUN;
@@ -194,7 +167,7 @@ int main(int argc, char **argv)
         if (!exif_setbyteorder(order)) {
             FCLOSE(fp);
             mem_free(buf, e->chunk);
-            exit(1);
+            return 1;
         }
 
         e = get_chunk(chunk_pos, 4);
@@ -203,7 +176,7 @@ int main(int argc, char **argv)
             fprintf(stderr, "Error: invalid offset of first IFD: %u (%08x)\n", off, off);
             FCLOSE(fp);
             mem_free(buf, e->chunk);
-            exit(1);
+            return 1;
         }
         FREE(e->chunk);
 
@@ -217,13 +190,13 @@ int main(int argc, char **argv)
     }
 
     if (count) {
-        if ((status = fs_mkdir(path, dry)) != S_OK)
-            fprintf(stderr, "Error: can't create '%s': %s\n", path, get_status(status));
+        if ((status = fs_mkdir(dir_name, dry)) != S_OK)
+            fprintf(stderr, "Error: can't create '%s': %s\n", dir_name, get_status(status));
     }
 
     // Write the output file
     if (count && !dry && status == S_OK) {
-        ofile = str_concat(path, "/", OUTPREFIX, basename(ifile));
+        ofile = str_concat(dir_name, "/", OUTPREFIX, basename(ifile));
         status =_save_output_file(ofile, buf, isize, &osize);
 
         if (status != S_OK)
@@ -237,7 +210,7 @@ int main(int argc, char **argv)
 
         // Create destination directory for sections data
         if (node && !dry) {
-            spath = str_concat(path, "/", OUTPREFIX, basename(ifile), "-bin");
+            spath = str_concat(dir_name, "/", OUTPREFIX, basename(ifile), "-bin");
             if (fs_mkdir(spath, dry) != 0)
                 fprintf(stderr, "Error: can't create '%s'\n", spath);
         }
@@ -262,7 +235,7 @@ int main(int argc, char **argv)
         printf("\n-= Exifree v0.1 =-\n");
         printf("\ncleared: %lu bytes from %d sectors\n",
                 exif_changed(0,0)->bytes, exif_changed(0,0)->changed);
-        printf("input file: %s (%ld)\n", pathname, isize);
+        printf("input file: %s (%ld)\n", input_file, isize);
         printf("output file: %s (%ld)\n", ofile, osize);
         if (spath) {
             printf("binary dumps: %s\n", spath);
@@ -272,6 +245,42 @@ int main(int argc, char **argv)
     FCLOSE(fp);
     mem_free(ofile, e->chunk, buf);
 
+    return 0;
+}
+
+int main(int argc, char **argv)
+{
+    int flags = 0;
+    char *input_file= NULL, *dir_name = ".";
+    for (int i = 1; i < argc; ++i) {
+        char *arg = argv[i];
+        for (++arg; *arg; ++arg) {
+            switch(*arg) {
+                case 'v':
+                    flags |= SET_VERBOSE;
+                    break;
+                case 'r':
+                    flags |= SET_DRYRUN;
+                    break;
+                case 's':
+                    flags |= SET_BINDUMP;
+                    break;
+                case 'd':
+                    dir_name = argv[++i];
+                    break;
+                default:
+                    input_file = argv[i];
+                    break;
+            }
+            if (input_file)
+                break;
+        }
+    }
+
+    if (!input_file)
+        hlp(0);
+
+    assert(process_and_run(input_file, dir_name, flags) == 0);
     return 0;
 }
 
