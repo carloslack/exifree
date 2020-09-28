@@ -54,12 +54,7 @@ static void hlp(char arg)
     exit(0);
 }
 
-struct op{
-    int count;
-    OP op;
-}op;
-
-static int _IFD0(uint32_t offset, bool bin, int op)
+static int _IFD0(uint32_t offset, bool bin)
 {
     uint32_t pos = offset;
     int count = 0;
@@ -213,7 +208,7 @@ int main(int argc, char **argv)
         FREE(e->chunk);
 
         // Load data and etc...
-        count = _IFD0(off+hoff,bin,0);
+        count = _IFD0(off+hoff,bin);
         if (count) {
             bool v = flags & SET_VERBOSE;
             exif_ifddata(v,bin);

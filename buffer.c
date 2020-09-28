@@ -112,8 +112,7 @@ static void _store_data(struct exif *e, unsigned char *buf, int rpt)
 void _wipe_chunk(struct exif *e, bool verbose, bool bin, int rpt)
 {
     long file_size = exif_getfilesize();
-    if (!e || e->wlen <= 0 || e->wpos < 0 ||
-            e->wpos > file_size || e->wpos+e->wlen > file_size) {
+    if (!e || e->wlen <= 0 || e->wpos > file_size || e->wpos+e->wlen > file_size) {
         fprintf(stderr, "%s", get_status(S_ARG));
         return;
     }
