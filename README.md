@@ -48,10 +48,10 @@
 
 | Parameter                    | Description                           |
 |:----------------------------:|---------------------------------------|
-| `<image file>`               | Wipe out exif contents & save the output as "wiped_<image file>" |
-| `-r`                         | Dry-run against image file - sanit test without generating an output |
+| `<image file>`               | Wipe out exif contents & save the output as `wiped_<image file>` |
+| `-r`                         | Dry-run against image file - sanity test without generating an output |
 | `-v`                         | Verbose show sections details to standard output |
-| `-s`                         | Save sections in output "wiped_<image file>-bin" |
+| `-s`                         | Save sections in output `wiped_<image file>-bin` |
 | `-d <destination directory>` | Save output file (and sections if used) in destination directory |
 | `-h`                         | Show help and exit |
 
@@ -77,4 +77,10 @@
     http://exif.org
 
 ## Bugs
-    They are there!
+    Currently working on find & name them but surely
+    there are some or many.
+
+## Improvements needed
+    Support more image formats
+    Support more image tags
+    Implement fuzzer module
