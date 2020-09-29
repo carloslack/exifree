@@ -1,0 +1,15 @@
+** Use struct exif everywhere instead of passing N args
+
+** Go beyond and above with PDF's
+
+** Check if there are cases where data_len > 4 bytes and still not subifd
+
+** Allow recursive execution (maybe)
+
+** Fix or think of a decent error API
+
+** Refactor data structure
+
+** Create lua profiles and change jpegs based on profile (cool)
+
+** Fix extra '/' appended to paths on user outputs
