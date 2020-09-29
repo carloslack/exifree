@@ -35,7 +35,7 @@
         make test
 
 ## Usage
-    $ ./exifree
+    $ ./exifree -h
     Usage: exifree [OPTION]... <FILE>
 
     Optional arguments
@@ -44,6 +44,29 @@
      -v             verbose dump sections
      -r             dry-run
      -s             save exif sections in dirname
+     -h             show this help
+
+| Parameter                    | Description                           |
+|:----------------------------:|---------------------------------------|
+| `<image file>`               | Wipe out exif contents & save the output as "wiped_<image file>" |
+| `-r`                         | Dry-run against image file - sanit test without generating an output |
+| `-v`                         | Verbose show sections details to standard output |
+| `-s`                         | Save sections in output "wiped_<image file>-bin" |
+| `-d <destination directory>` | Save output file (and sections if used) in destination directory |
+| `-h`                         | Show help and exit |
+
+## Sample output
+
+    Running with -v (long output, showing here begin-end only)
+
+![Screenshot](docs/images/ex1.png)
+![Screenshot](docs/images/ex2.png)
+
+    Running with -s
+
+![Screenshot](docs/images/sct1.png)
+![Screenshot](docs/images/sct2.png)
+![Screenshot](docs/images/sct3.png)
 
 ## References
     https://www.awaresystems.be/imaging/tiff/tifftags.html
