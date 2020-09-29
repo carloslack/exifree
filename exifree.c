@@ -52,6 +52,7 @@ static void hlp(char arg)
     printf(" -v\t\t  verbose dump sections\n");
     printf(" -r\t\t  dry-run\n");
     printf(" -s\t\t  save exif sections in dirname\n");
+    printf(" -h\t\t  show this help\n");
     exit(0);
 }
 
@@ -118,29 +119,28 @@ int process_and_run(char *input_file, char *dir_name, int flags)
     FILE *fp = fopen(input_file, "r+b");
     if (!fp) {
         fprintf(stderr, "fopen: %s\n", strerror(errno));
-        return 1;
+        // Show help and exit
+        hlp(0);
     }
 
     long isize;
     if ((status = fs_get_file_size(fp, &isize)) != S_OK) {
-        fprintf(stderr, "%s\n", get_status(status));
-        return 1;
+        return status;
     }
 
     if (!(isize = exif_setfilesize(isize))) {
-        fprintf(stderr, "Error: invalid file size %ld\n", isize);
-        return 1;
+        return S_FILE_SIZE;
     }
 
     unsigned char *buf = exif_setbufferptr(isize);
     if (!buf) {
-        printf("Error: cannot set file buffer\n");
-        return 1;
+        return S_FILE_BUFFER;
     }
 
     if (fread(buf, isize, 1, fp) != 1) {
-        printf("%s\n", strerror(errno));
-        return 1;
+        // Keep this one as it is libc error
+        fprintf(stderr, "%s\n", strerror(errno));
+        return S_FILE_BUFFER;
     }
 
     bool dry = flags & SET_DRYRUN;
@@ -245,13 +245,14 @@ int process_and_run(char *input_file, char *dir_name, int flags)
     FCLOSE(fp);
     mem_free(ofile, e->chunk, buf);
 
-    return 0;
+    return status;
 }
 
 int main(int argc, char **argv)
 {
     int flags = 0;
     char *input_file= NULL, *dir_name = ".";
+    status_e status;
     for (int i = 1; i < argc; ++i) {
         char *arg = argv[i];
         for (++arg; *arg; ++arg) {
@@ -268,6 +269,8 @@ int main(int argc, char **argv)
                 case 'd':
                     dir_name = argv[++i];
                     break;
+                case 'h':
+                    hlp(0);
                 default:
                     input_file = argv[i];
                     break;
@@ -280,7 +283,9 @@ int main(int argc, char **argv)
     if (!input_file)
         hlp(0);
 
-    assert(process_and_run(input_file, dir_name, flags) == 0);
-    return 0;
+    status = process_and_run(input_file, dir_name, flags);
+    if (status != S_OK)
+        fprintf(stderr, "%s\n", get_status(status));
+    return status;
 }
 

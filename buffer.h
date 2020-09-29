@@ -81,7 +81,11 @@ typedef enum {
     S_EMPTY,
     S_MISMATCH,
     S_ERRNO,
-    S_MEMORY
+    S_MEMORY,
+    S_INPUT_FILE,
+    S_FILE_SIZE,
+    S_FILE_BUFFER,
+    S_FILE_READ
 } status_e;
 
 struct status_t{
@@ -96,6 +100,10 @@ static struct status_t status_handler[] = {
     {S_EMPTY, "Invalid input file"},
     {S_MISMATCH, "Data or string mismatch error"},
     {S_MEMORY, "Memory error"},
+    {S_INPUT_FILE, "Input file error"},
+    {S_FILE_SIZE, "Invalid or zero file size"},
+    {S_FILE_BUFFER, "Cannot set file buffer ptr"},
+    {S_FILE_READ, "Cannot read from file"},
     {-1}
 };
 
