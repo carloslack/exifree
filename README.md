@@ -68,6 +68,10 @@
 ![Screenshot](docs/images/sct2.png)
 ![Screenshot](docs/images/sct3.png)
 
+    A glimpse of before and after
+
+![Screenshot](docs/images/wiped.png)
+
 ## References
     https://www.awaresystems.be/imaging/tiff/tifftags.html
     http://exif.org
