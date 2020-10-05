@@ -12,6 +12,8 @@
 ## About
         Exchangeable Image File Format - EXIF, is a standard that specifies the formats for images,
     sound and ancillary tags used by digital cameras and smartphones.
+        ExiFree is not a Exif library - it is a standalone C code written
+    from scratch.
 
 ## Purpose
     To remove (erase) data stored in JPEG files that are part of the EXIF.
