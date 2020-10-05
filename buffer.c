@@ -53,7 +53,6 @@ static const format_t *_get_data_format(uint16_t format)
     return NULL;
 }
 
-//_store_section(e, e->tags->desc, e->group, e->tags->tag);
 static void _store_section(struct exif *e)
 {
     if (!e || e->len <= 0 || !e->tags->desc) {
