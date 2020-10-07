@@ -36,6 +36,21 @@
 
         make test
 
+    An error-free run will look like:
+
+        $ make test
+        rm -f exifree
+        rm -rf exif-samples/jpg/gps/wiped_DSCN0010.jpg-bin
+        /usr/bin/find exif-samples/jpg/ -name "wiped_*" -exec rm -f {} \;
+        /usr/bin/gcc exifree.c fs.c buffer.c hexdump.c -Wall -Werror -o /home/user/exifree/exifree
+        cd  exif-samples/jpg && ls *.jpg| while read x ; do /home/user/exifree/exifree -d . -f $x >/dev/null && md5=$(/usr/bin/md5sum wiped_$x |cut -d " " -f1) && match=$(grep $x  /home/user/exifree/test-useres.txt| cut -d " " -f1); if [ $md5 != $match ]; then echo ;	echo "!!!!!!!!!!!!! Fail user test for  exif-samples/jpg/$x :~("; echo; fi; done
+        cd  exif-samples/jpg/tests && ls *.jpg| while read x ; do /home/user/exifree/exifree -d . -f $x >/dev/null && md5=$(/usr/bin/md5sum wiped_$x |cut -d " " -f1) && match=$(grep $x  /home/user/exifree/test-useres.txt| cut -d " " -f1); if [ $md5 != $match ]; then echo ;	echo "!!!!!!!!!!!!! Fail user test for  exif-samples/jpg/tests/$x :~("; echo; fi; done
+        cd  exif-samples/jpg/mobile && ls *.jpg| while read x ; do /home/user/exifree/exifree -d . -f $x >/dev/null && md5=$(/usr/bin/md5sum wiped_$x |cut -d " " -f1) && match=$(grep $x  /home/user/exifree/test-useres.txt| cut -d " " -f1); if [ $md5 != $match ]; then echo ;	echo "!!!!!!!!!!!!! Fail user test for  exif-samples/jpg/mobile/$x :~("; echo; fi; done
+        cd  exif-samples/jpg/gps && ls *.jpg| while read x ; do /home/user/exifree/exifree -d . -f $x >/dev/null && md5=$(/usr/bin/md5sum wiped_$x |cut -d " " -f1) && match=$(grep $x  /home/user/exifree/test-useres.txt| cut -d " " -f1); if [ $md5 != $match ]; then echo ;	echo "!!!!!!!!!!!!! Fail user test for  exif-samples/jpg/gps/$x :~("; echo; fi; done
+        cd  exif-samples/jpg/hdr && ls *.jpg| while read x ; do /home/user/exifree/exifree -d . -f $x >/dev/null && md5=$(/usr/bin/md5sum wiped_$x |cut -d " " -f1) && match=$(grep $x  /home/user/exifree/test-useres.txt| cut -d " " -f1); if [ $md5 != $match ]; then echo ;	echo "!!!!!!!!!!!!! Fail user test for  exif-samples/jpg/hdr/$x :~("; echo; fi; done
+        cd  exif-samples/jpg/gps && /home/user/exifree/exifree -f DSCN0010.jpg -s -d . >/dev/null && cd - && hexdump -C  exif-samples/jpg/gps/wiped_DSCN0010.jpg-bin/* >  exif-samples/jpg/gps/wiped_DSCN0010.jpg-bin/wiped_diff.diff && diff /home/user/exifree/md5-01-sct.txt  exif-samples/jpg/gps/wiped_DSCN0010.jpg-bin/wiped_diff.diff ; if [ $? != 0 ]; then echo ;	echo "!!!!!!!!!!!!! Fail hex test for  exif-samples/jpg/gps/wiped_DSCN0010.jpg-bin files :~("; echo; fi;
+        /home/user/exifree
+
 ## Usage
     $ ./exifree -h
     Usage: exifree [OPTION]... <FILE>
