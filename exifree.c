@@ -234,7 +234,7 @@ int process_and_run(char *input_file, char *dir_name, int flags)
     if (!dry && status == S_OK) {
         printf("\n-= Exifree v0.1 =-\n");
         printf("\ncleared: %lu bytes from %d sectors\n",
-                exif_changed(0,0)->bytes, exif_changed(0,0)->changed);
+                get_written_stats()->bytes, get_written_stats()->changed);
         printf("input file: %s (%ld)\n", input_file, isize);
         printf("output file: %s (%ld)\n", ofile, osize);
         if (spath) {
