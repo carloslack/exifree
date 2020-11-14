@@ -35,6 +35,8 @@ typedef struct
     char *desc;
 } wipe_t;
 
+static stats_t stats;
+
 static const tags_t *_get_data_tag(uint16_t tag)
 {
     for (int i = 0; tags[i].desc != NULL; ++i) {
@@ -52,6 +54,14 @@ static const format_t *_get_data_format(uint16_t format)
     }
     return NULL;
 }
+
+static stats_t *_add_stats(size_t bytes)
+{
+    stats.changed++;
+    stats.bytes += bytes;
+    return &stats;
+}
+
 
 static void _store_section(struct exif *e)
 {
@@ -108,6 +118,11 @@ static void _store_data(struct exif *e, unsigned char *buf, int rpt)
     head = node;
 }
 
+stats_t *get_written_stats(void)
+{
+    return &stats;
+}
+
 void _wipe_chunk(struct exif *e, bool verbose, bool bin, int rpt)
 {
     long file_size = exif_getfilesize();
@@ -123,7 +138,7 @@ void _wipe_chunk(struct exif *e, bool verbose, bool bin, int rpt)
         if (bin)
             _store_data(e, buf+e->wpos, rpt);
         memset(buf+e->wpos, 0, e->wlen);
-        exif_changed(1, e->wlen);
+        _add_stats(e->wlen);
     }
 }
 
@@ -175,14 +190,6 @@ uint32_t data32(unsigned char *chunk)
     else if (order == MOTOROLA)
         retval = _data32(chunk);
     return retval;
-}
-
-stats_t *exif_changed(int inc, size_t bytes)
-{
-    static stats_t stats;
-    stats.changed += inc;
-    stats.bytes += bytes;
-    return &stats;
 }
 
 uint16_t exif_setbyteorder(uint16_t val)

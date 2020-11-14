@@ -192,7 +192,7 @@ status_e exif_subifdata(bool verbose, bool bin);
 /*
  * End-user statistics
  */
-stats_t *exif_changed(int inc, size_t bytes);
+stats_t *get_written_stats(void);
 
 /*
  * Returns a buffer chunk from given position and size
